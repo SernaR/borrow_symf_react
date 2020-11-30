@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/{productId}", name="_find", methods={"GET"})
+     * @Route("/{productId<[0-9]+>}", name="_find", methods={"GET"})
      */
     public function find(ProductRepository $repo, $productId) {
         $product =  $repo->find($productId);
@@ -33,7 +33,8 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $repo)
     {
-        return $this->json( $repo->findAll(), 200, [], ['groups' => "products"]);
+        $products = $repo->findBy([], ['createdAt' => 'DESC']);
+        return $this->json( $products, 200, [], ['groups' => "products"]);
     }
 
 }
