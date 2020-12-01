@@ -30,7 +30,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("products")
-     * @Assert\NotBlank(message="Le nom du produit est obligatoire")
+     * @Assert\NotBlank(message="Le nom de l'article est obligatoire")
      */
     private $name;
 
@@ -45,8 +45,20 @@ class Product
      */
     private $conversations;
 
-    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAvailable = true;
 
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="La description est obligatoire")
+     * @Assert\Length(min=3)
+     * @Groups("products")
+     */
+    private $description;
+
+    
     public function __construct()
     {
         $this->conversations = new ArrayCollection();
@@ -107,6 +119,30 @@ class Product
                 $conversation->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsAvailable(): ?bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function setIsAvailable(bool $isAvailable): self
+    {
+        $this->isAvailable = $isAvailable;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
