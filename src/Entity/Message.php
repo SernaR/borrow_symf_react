@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\MessageRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\MessageRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MessageRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Message
 {
@@ -19,11 +22,13 @@ class Message
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("conversations")
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="messages")
+     * @Groups("conversations")
      */
     private $user;
 
@@ -33,9 +38,10 @@ class Message
     private $conversation;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @Groups("conversations")
      */
-    private $createAt;
+    private $createdAt;
 
     public function getId(): ?int
     {
@@ -78,15 +84,25 @@ class Message
         return $this;
     }
 
-    public function getCreateAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->createAt;
+        return $this->createdAt;
     }
 
-    public function setCreateAt(\DateTimeInterface $createAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->createAt = $createAt;
+        $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updateTimestamps()
+    {
+        if($this->getCreatedAt() === null) {
+            $this->setCreatedAt(new \DateTimeImmutable());
+        }
     }
 }

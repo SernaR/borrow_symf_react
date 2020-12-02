@@ -23,20 +23,20 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("products")
+     * @Groups({"products", "conversations"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("products")
+     * @Groups({"products", "conversations"})
      * @Assert\NotBlank(message="Le nom de l'article est obligatoire")
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="products")
-     * @Groups("products")
+     * @Groups({"products", "conversations"})
      */
     private $owner;
 

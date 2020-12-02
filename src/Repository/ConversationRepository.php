@@ -19,6 +19,20 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
+    public function findByOwner($owner)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.product', 'p')
+            ->join('p.owner', 'o')
+            ->andWhere('c.isDone = :isDone')
+            ->andWhere('o.id = :owner')
+            ->setParameter('owner', $owner)
+            ->setParameter('isDone', false)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Conversation[] Returns an array of Conversation objects
     //  */
