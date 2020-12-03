@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
+// todo : function toggleRemove ?? 2 en 1 ??
+// question: vérifier l'utilisateur ???
+
 /**
  * @Route("/api", name="products")
  */
@@ -30,15 +33,15 @@ class ProductController extends AbstractController
     /**
      * @Route("/products/{productId<[0-9]+>}", name="_find", methods="GET")
      */
-    public function find(ProductRepository $repo, $productId) { 
-        $product =  $repo->find($productId);
+    public function find(Product $product) { //ProductRepository $repo, $productId
         
-        if (!$product) {
-            return $this->json([
-                'status' => 400,
-                'message' => "désolé l'article n'existe plus"
-            ], 400);
-        }
+        // $product =  $repo->find($productId);
+        // if (!$product) {
+        //     return $this->json([
+        //         'status' => 400,
+        //         'message' => "désolé l'article n'existe plus"
+        //     ], 400);
+        // }
 
         return $this->json( $product, 200, [], ['groups' => "products"]);
     }

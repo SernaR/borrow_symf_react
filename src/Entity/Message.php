@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MessageRepository;
+
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -17,12 +18,14 @@ class Message
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("message")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("conversations")
+     * @Groups({"conversations", "message"})
+     * @Assert\NotBlank(message="Le contenu du message est obligatoire")
      */
     private $content;
 
@@ -34,6 +37,7 @@ class Message
 
     /**
      * @ORM\ManyToOne(targetEntity=Conversation::class, inversedBy="messages")
+     * @Groups("message")
      */
     private $conversation;
 

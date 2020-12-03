@@ -17,13 +17,14 @@ class Conversation
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"message", "conversations"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isDone;
+    private $isDone = false;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="conversations")

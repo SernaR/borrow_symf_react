@@ -53,7 +53,7 @@ class Product
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="La description est obligatoire")
-     * @Assert\Length(min=3)
+     * @Assert\Length(min=3, minMessage ="{{ limit }} caractères au minimum")
      * @Groups("products")
      */
     private $description;
