@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ConversationRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -37,6 +39,23 @@ class Conversation
      * @Groups("conversations")
      */
     private $messages;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups("conversations")
+     */
+    private $borrow_start;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups("conversations")
+     */
+    private $borrow_end;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isConfirmed = false;
 
     public function __construct()
     {
@@ -98,6 +117,42 @@ class Conversation
                 $message->setConversation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBorrowStart(): ?\DateTimeInterface
+    {
+        return $this->borrow_start;
+    }
+
+    public function setBorrowStart(?\DateTimeInterface $borrow_start): self
+    {
+        $this->borrow_start = $borrow_start;
+
+        return $this;
+    }
+
+    public function getBorrowEnd(): ?\DateTimeInterface
+    {
+        return $this->borrow_end;
+    }
+
+    public function setBorrowEnd(?\DateTimeInterface $borrow_end): self
+    {
+        $this->borrow_end = $borrow_end;
+
+        return $this;
+    }
+
+    public function getIsConfirmed(): ?bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(?bool $isConfirmed): self
+    {
+        $this->isConfirmed = $isConfirmed;
 
         return $this;
     }

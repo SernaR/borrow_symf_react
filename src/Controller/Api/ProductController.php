@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 // todo : function toggleRemove ?? 2 en 1 ??
-// question: vérifier l'utilisateur ???
 
 /**
  * @Route("/api", name="products")
@@ -31,18 +30,9 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/products/{productId<[0-9]+>}", name="_find", methods="GET")
+     * @Route("/products/{product<[0-9]+>}", name="_find", methods="GET")
      */
-    public function find(Product $product) { //ProductRepository $repo, $productId
-        
-        // $product =  $repo->find($productId);
-        // if (!$product) {
-        //     return $this->json([
-        //         'status' => 400,
-        //         'message' => "désolé l'article n'existe plus"
-        //     ], 400);
-        // }
-
+    public function find(Product $product) { 
         return $this->json( $product, 200, [], ['groups' => "products"]);
     }
 
@@ -97,20 +87,26 @@ class ProductController extends AbstractController
      /**
      * @Route("/products/{product<[0-9]+>}", name="_edit", methods="PUT")
      */
-    public function edit(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, Product $product)
+    public function edit(Request $request, SerializerInterface $serializer,EntityManagerInterface $em, ValidatorInterface $validator, Product $product)
     {
-        $data = json_decode($request->getContent(), true);
-    
-        isset($data['name']) ? $product->setName($data['name']) : true;
-        isset($data['description']) ? $product->setdescription($data['description']) : true;
-        
-        $errors = $validator->validate($product);
-        if(count($errors) > 0) {
-            return $this->json($errors, 400); 
-        }
-        
-        $em->flush();
-        return $this->json($product, 200, [], ['groups' => "products"]); 
+        $json = $request->getContent();
+        try {
+            $productDeserialized = $serializer->deserialize($json, Product::class, 'json', array('object_to_populate' => $product));
+            
+            $errors = $validator->validate($productDeserialized);
+            if(count($errors) > 0) {
+                return $this->json($errors, 400); 
+            }
+            
+            $em->flush();
+            return $this->json($productDeserialized, 200, [], ['groups' => "products"]);
+
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => 400,
+                'message' => $e->getMessage()
+            ], 400);
+        } 
     }
 
 }
