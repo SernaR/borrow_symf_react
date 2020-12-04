@@ -81,27 +81,27 @@ class ConversationController extends AbstractController
         $data = json_decode($json, true);
         $violations = [];
         
-        if( !isset($data['borrow_start']) ){
+        if( !isset($data['borrowStart']) ){
             array_push($violations, [
-                "propertyPath" => "borrow_start",
+                "propertyPath" => "borrowStart",
                 "title" => "la date de début est obligatoire",
             ]);
         }else {
-             if( $data['borrow_start'] <  date('Y-m-d') ){
+             if( $data['borrowStart'] <  date('Y-m-d') ){
                 array_push($violations, [
-                    "propertyPath" => "borrow_start",
+                    "propertyPath" => "borrowStart",
                     "title" => "la date de début doit être supérieure à aujourd'hui",
                 ]);
             }
-            if( empty( $data['borrow_end'] ) ){
+            if( empty( $data['borrowEnd'] ) ){
                 array_push($violations, [
-                    "propertyPath" => "borrow_end",
+                    "propertyPath" => "borrowEnd",
                     "title" => "la date de fin est obligatoire",
                 ]);
             }else {
-                if( $data['borrow_end'] < $data['borrow_start'] ){
+                if( $data['borrowEnd'] < $data['borrowStart'] ){
                     array_push($violations, [
-                        "propertyPath" => "borrow_end",
+                        "propertyPath" => "borrowEnd",
                         "title" => "la date de fin doit être plus grande que la date de début",
                     ]);
                 }

@@ -3,18 +3,22 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\Timestampable;
 use App\Repository\ConversationRepository;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ConversationRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Conversation
 {
+    use Timestampable;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -44,13 +48,13 @@ class Conversation
      * @ORM\Column(type="date", nullable=true)
      * @Groups("conversations")
      */
-    private $borrow_start;
+    private $borrowStart;
 
     /**
      * @ORM\Column(type="date", nullable=true)
      * @Groups("conversations")
      */
-    private $borrow_end;
+    private $borrowEnd;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -123,24 +127,24 @@ class Conversation
 
     public function getBorrowStart(): ?\DateTimeInterface
     {
-        return $this->borrow_start;
+        return $this->borrowStart;
     }
 
-    public function setBorrowStart(?\DateTimeInterface $borrow_start): self
+    public function setBorrowStart(?\DateTimeInterface $borrowStart): self
     {
-        $this->borrow_start = $borrow_start;
+        $this->borrowStart = $borrowStart;
 
         return $this;
     }
 
     public function getBorrowEnd(): ?\DateTimeInterface
     {
-        return $this->borrow_end;
+        return $this->borrowEnd;
     }
 
-    public function setBorrowEnd(?\DateTimeInterface $borrow_end): self
+    public function setBorrowEnd(?\DateTimeInterface $borrowEnd): self
     {
-        $this->borrow_end = $borrow_end;
+        $this->borrowEnd = $borrowEnd;
 
         return $this;
     }
