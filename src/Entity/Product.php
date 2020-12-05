@@ -65,13 +65,14 @@ class Product
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
      * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName")
-     * 
+     * @Assert\Image(maxSize="8M", maxSizeMessage="l'image est trop volumineuse, maximum de {{ limit }} {{ suffix }}")
      * @var File|null
      */
     private $imageFile;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("products")
      */
     private $imageName;
 

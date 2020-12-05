@@ -4,16 +4,13 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-
-// todo : function toggleRemove ?? 2 en 1 ??
 
 /**
  * @Route("/api", name="products")
@@ -39,29 +36,27 @@ class ProductController extends AbstractController
     /**
      * @Route("/products/{user}", name="_store", methods="POST")
      */
-    public function store(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, User $user, ValidatorInterface $validator)
+    public function store(Request $request, EntityManagerInterface $em, User $user, ValidatorInterface $validator)
     {
-        $json = $request->getContent();
-        try {
-            $product = $serializer->deserialize($json, Product::class, 'json');
-            $product->setOwner($user); //jwt
-            
-            $errors = $validator->validate($product);
-            if(count($errors) > 0) {
-                return $this->json($errors, 400); 
-            }
-            
-            $em->persist($product);
-            $em->flush();
+        $uploadedFile = $request->files->get('imageFile');
+        $body = $request->request; 
 
-            return $this->json($product, 201, [], ['groups' => "products"]);
+        $product = new Product();
+        $product->setName($body->get('name'));
+        $product->setDescription($body->get('description'));
+        $product->setImageFile($uploadedFile);
 
-        } catch (NotEncodableValueException $e) {
-            return $this->json([
-                'status' => 400,
-                'message' => $e->getMessage()
-            ], 400);
+        $errors = $validator->validate($product);
+        if(count($errors) > 0) {
+            return $this->json($errors, 400); 
         }
+
+        $product->setOwner($user); //jwt
+
+        $em->persist($product);
+        $em->flush();
+
+        return $this->json($product, 201, [], ['groups' => "products"]);   
     }
 
     /**
@@ -85,28 +80,28 @@ class ProductController extends AbstractController
     }
 
      /**
-     * @Route("/products/{product<[0-9]+>}", name="_edit", methods="PUT")
+     * @Route("/products/{product<[0-9]+>}/edit", name="_edit", methods="POST")
      */
-    public function edit(Request $request, SerializerInterface $serializer,EntityManagerInterface $em, ValidatorInterface $validator, Product $product)
+    public function edit(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, Product $product)
     {
-        $json = $request->getContent();
-        try {
-            $productDeserialized = $serializer->deserialize($json, Product::class, 'json', array('object_to_populate' => $product));
-            
-            $errors = $validator->validate($productDeserialized);
-            if(count($errors) > 0) {
-                return $this->json($errors, 400); 
-            }
-            
-            $em->flush();
-            return $this->json($productDeserialized, 200, [], ['groups' => "products"]);
+        $uploadedFile = $request->files->get('imageFile');  
+        $name = $request->request->get('name');
+        $description = $request->request->get('description');
 
-        } catch (NotEncodableValueException $e) {
-            return $this->json([
-                'status' => 400,
-                'message' => $e->getMessage()
-            ], 400);
-        } 
+        empty($name) ? true : $product->setName($name);
+        empty($description) ? true : $product->setDescription($description);
+        isset($uploadedFile) ? $product->setImageFile($uploadedFile) : true;
+
+        $errors = $validator->validate($product);
+        if(count($errors) > 0) {
+            return $this->json($errors, 400); 
+        }
+        
+        $em->flush();
+
+        return $this->json(['product' => $product, 'name' => $name], 200, [], ['groups' => "products"]);   
     }
-
 }
+
+//update
+//$productDeserialized = $serializer->deserialize($json, Product::class, 'json', array('object_to_populate' => $product));
