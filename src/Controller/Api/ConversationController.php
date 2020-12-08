@@ -19,15 +19,12 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 class ConversationController extends AbstractController
 {
     /**
-     * @Route("/conversations/{user<[0-9]+>}", name="_index", methods="GET")
+     * @Route("/conversations", name="_index", methods="GET")
      */
-    public function index(ConversationRepository $repo, User $user)
+    public function index(ConversationRepository $repo)
     {
-        //user par jwt
-        // $current_user = $this->getUser();
-        // $id = $current_user->getId();
-        
-        $conversations = $repo->findByOwner($user->getId());
+        $current_user = $this->getUser();
+        $conversations = $repo->findByOwner($current_user->getId());
         return $this->json( $conversations, 200, [], ['groups' => "conversations"]);
     }
 

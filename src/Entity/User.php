@@ -6,25 +6,34 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @UniqueEntity("email", message="un utilisateur ayant cette adresse email existe déjà")
  */
 class User implements UserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"products", "conversations"})
+     * @Groups({"products", "conversations", "user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="l'email doit être renseigné")
+     * @Assert\Email(message="l'adresse email doit avoir un format valide")
      */
     private $email;
 
@@ -36,6 +45,11 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="le mot de passe est obligatoire")
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/",
+     *     match=false,
+     *     message="Votre mot de passe doit avoir au moins 1 majuscule, 1 chiffre, 1 caractère spécial et une longueur d'au moins 8 caractères")
      */
     private $password;
 
@@ -46,7 +60,9 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products", "conversations"})
+     * @Groups({"products", "conversations", "user"})
+     * @Assert\NotBlank(message="le nom est obligatoire")
+     * @Assert\Length(min=3, minMessage ="{{ limit }} caractères au minimum")
      */
     private $name;
 
@@ -57,6 +73,7 @@ class User implements UserInterface
 
     public function __construct()
     {
+        $this->roles = [self::ROLE_USER];
         $this->products = new ArrayCollection();
         $this->messages = new ArrayCollection();
     }

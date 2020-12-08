@@ -4,7 +4,6 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Entity\Product;
-use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,24 +33,19 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/products/{user}", name="_store", methods="POST")
+     * @Route("/products", name="_store", methods="POST")
      */
-    public function store(Request $request, EntityManagerInterface $em, User $user, ValidatorInterface $validator)
+    public function store(Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
     {
-        $uploadedFile = $request->files->get('imageFile');
-        $body = $request->request; 
-
-        $product = new Product();
-        $product->setName($body->get('name'));
-        $product->setDescription($body->get('description'));
-        $product->setImageFile($uploadedFile);
+        $current_user = $this->getUser();
+        $product = $this->populateProduct($request, new Product());
 
         $errors = $validator->validate($product);
         if(count($errors) > 0) {
             return $this->json($errors, 400); 
         }
 
-        $product->setOwner($user); //jwt
+        $product->setOwner($current_user); 
 
         $em->persist($product);
         $em->flush();
@@ -84,13 +78,7 @@ class ProductController extends AbstractController
      */
     public function edit(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, Product $product)
     {
-        $uploadedFile = $request->files->get('imageFile');  
-        $name = $request->request->get('name');
-        $description = $request->request->get('description');
-
-        empty($name) ? true : $product->setName($name);
-        empty($description) ? true : $product->setDescription($description);
-        isset($uploadedFile) ? $product->setImageFile($uploadedFile) : true;
+        $product = $this->populateProduct($request, $product);
 
         $errors = $validator->validate($product);
         if(count($errors) > 0) {
@@ -99,9 +87,21 @@ class ProductController extends AbstractController
         
         $em->flush();
 
-        return $this->json(['product' => $product, 'name' => $name], 200, [], ['groups' => "products"]);   
+        return $this->json($product, 200, [], ['groups' => "products"]);   
+    }
+
+    private function populateProduct($request, $product)
+    {
+        $uploadedFile = $request->files->get('imageFile');
+        $name = $request->request->get('name');
+        $description = $request->request->get('description');
+
+        empty($name) ? true : $product->setName($name);
+        empty($description) ? true : $product->setDescription($description);
+        isset($uploadedFile) ? $product->setImageFile($uploadedFile) : true;
+
+        return $product; 
     }
 }
 
-//update
 //$productDeserialized = $serializer->deserialize($json, Product::class, 'json', array('object_to_populate' => $product));

@@ -18,3 +18,7 @@
 ###> custom ###
 /public/images/
 ###< custom ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

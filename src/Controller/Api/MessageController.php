@@ -52,10 +52,11 @@ class MessageController extends AbstractController
 
     private function store(Conversation $conversation, $json)
     {
+        $current_user = $this->getUser();
         try {
             $message = $this->serializer->deserialize($json, Message::class, 'json');
             $message->setConversation($conversation);
-            //$message->setUser);
+            $message->setUser($current_user);
 
             $errors = $this->validator->validate($message);
             if(count($errors) > 0) {
