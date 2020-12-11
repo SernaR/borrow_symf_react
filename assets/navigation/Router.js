@@ -3,8 +3,10 @@ import { HashRouter, Route, Switch, withRouter} from 'react-router-dom';
 
 import Navbar from './Navbar'
 import routes from './routes'
+
 import Home from '../pages/Home'
 import Products from '../pages/Products'
+import Login from '../pages/Login';
 
 const Router = () => {
     const NavbarWithRouter = withRouter(Navbar);
@@ -14,6 +16,7 @@ const Router = () => {
             <NavbarWithRouter/>
             <Switch>  
                 <Route exact strict path={routes.HOME} component={Home}/>
+                <Route path={routes.LOGIN} component={Login}/>
                 <Route path={routes.PRODUCTS} component={Products}/>
             </Switch>  
         </HashRouter>

@@ -21,7 +21,7 @@ function removeToken() {
 }
 
 function getUser() {
-    return getToken(user)
+    return getToken(true)
 }
 
 

@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-//import authAPI from '../../services/authAPI'
-//import AuthContext from '../../contexts/AuthContext';
 import routes from './routes'
+import useAuth from '../hooks/useAuth';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   menuButton: {
     textDecoration: 'none',
     color: 'inherit',
@@ -16,24 +15,28 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     justifyContent: 'space-around'
   },
-}));
+})
 
-export default function Navbar() {//{ history }
+export default function Navbar({ history }) {
   const classes = useStyles();
-  //const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const { user, logout } = useAuth()
 
-  // const handleLogout = () => {
-  //   authAPI.logout();
-  //   setIsAuthenticated(false);
-  //   history.push("/connexion");
-  // } 
+  const handleLogout = () => {
+    logout
+    history.push(routes.LOGIN);
+  } 
  
   return (  
     <AppBar position="static">
       <Toolbar className={classes.toolbar}>
           <NavLink to={routes.HOME} className={classes.menuButton}><Typography variant="h5" color="inherit" >Kip Creativ'</Typography></NavLink>  
           <div>
-            <Button color="inherit"><NavLink to={routes.PRODUCTS} className={classes.menuButton}>Annonces</NavLink></Button>
+            {user && <>
+              <Button color="inherit"><NavLink to={routes.PRODUCTS} className={classes.menuButton}>Annonces</NavLink></Button>
+              <Button color="inherit" onClick={handleLogout}>Déconnexion</Button>
+            </>||
+              <Button color="inherit"><NavLink to={routes.LOGIN} className={classes.menuButton}>Connexion</NavLink></Button>
+            }
           </div>
       </Toolbar>
     </AppBar>

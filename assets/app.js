@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom'
 
 import Router from './navigation/Router';
@@ -14,7 +14,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <AuthContext.Provider value={user, setUser}>
+            <AuthContext.Provider value={{user, setUser}}>
                 <Router />
             </AuthContext.Provider>
         </ThemeProvider>
