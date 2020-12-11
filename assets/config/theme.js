@@ -11,7 +11,7 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Source Sans Pro, Calibri',
+    fontFamily: 'Calibri',
   },
 });
 
