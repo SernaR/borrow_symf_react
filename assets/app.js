@@ -11,7 +11,6 @@ import './styles/app.css';
 
 const App = () => {
     const [user, setUser] = useState(authStorage.getUser);
-
     return (
         <ThemeProvider theme={theme}>
             <AuthContext.Provider value={{user, setUser}}>

@@ -22,7 +22,7 @@ export default function Navbar({ history }) {
   const { user, logout } = useAuth()
 
   const handleLogout = () => {
-    logout
+    logout()
     history.push(routes.LOGIN);
   } 
  
