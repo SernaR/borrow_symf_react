@@ -143,9 +143,9 @@ const Register = ({history}) => {
                         color="primary"
                         className={classes.submit}
                     >
-                        S'inscrire'
+                        S'inscrire
                     </Button>
-                    <Link to={LOGIN} className="btn btn-link">J'ai déjà un compte</Link>
+                    <Link to={routes.LOGIN} className="btn btn-link">J'ai déjà un compte</Link>
                 </form>
             </div> 
         </Container>    

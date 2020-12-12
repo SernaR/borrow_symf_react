@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup'
 
 import useAuth from '../hooks/useAuth';
 import authApi from '../api/auth'
 import routes from '../navigation/routes'
 
-import { Button, Container, makeStyles, TextField } from '@material-ui/core';
+import Form from '../components/forms/Form';
+import Field from '../components/forms/Field';
+import Button from '../components/forms/Button'
+
+import { Container, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
+    container: {
       marginTop: theme.spacing(4),
       display: 'flex',
       flexDirection: 'column',
@@ -16,74 +21,49 @@ const useStyles = makeStyles((theme) => ({
     form: {
       width: '100%', 
       marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-}));
+    }
+}))
+
+const validationSchema = Yup.object().shape({
+    username: Yup.string().required("le nom est obligatoire").email("l'adresse email doit avoir un format valide"),
+    password: Yup.string().required("le mot de passe est obligatoire")
+})
 
 const Login = ({history}) => {
     const classes = useStyles();
     const auth = useAuth()
 
-    const [credentials, setCredentials] = useState({
-        username: "user3@domain.fr",
-        password: "Mot2passe!!"
-    })
-    const [error, setError] = useState('');
+    const [errorMessage, setErrorMessage] = useState()
 
-    const handleChange = ({ currentTarget }) => {
-        const {value, name} = currentTarget;
-        setCredentials({ ...credentials, [name]: value })
-    }
+    const handleSubmit = async(credentials) => {
 
-    const handleSubmit = async(event) => {
-        event.preventDefault();
         const result = await authApi.login(credentials)
+        if(!result.ok) return setErrorMessage("Utilisateur inconnu ou alors les informations ne correspondent pas")
 
-        if(!result.ok) return setError("Utilisateur inconnu ou alors les informations ne correspondent pas")
-
-        setError('');
         auth.login(result.data.token)
         history.replace(routes.PRODUCTS);
     }
 
     return ( 
         <Container component="main" maxWidth="xs">
-            <div className={classes.paper}>
-                <form className={classes.form} onSubmit={handleSubmit} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={credentials.username} 
-                        onChange={handleChange}
-                        error={ error !== '' }
-                        helperText={error}
-                        fullWidth
-                        label="Login"
-                        name="username"
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        fullWidth
-                        name="password"
-                        label="Mot de passe"
-                        type="password"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Se connecter
-                    </Button>
-                </form>
+            <div className={classes.container}>
+                {errorMessage && <Typography gutterBottom color='error'>{errorMessage}</Typography>}
+                <Form
+                    initialValues={{ username: 'user3@domain.fr', password: 'Mot2passe!!' }}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                    >  
+                        <Field 
+                            name="username" 
+                            label='Adresse Email'
+                            />
+                        <Field
+                            name="password"
+                            type="password"
+                            label='Mot de passe'
+                            />
+                        <Button title="Se connecter" />
+                </Form>
             </div> 
         </Container>
     );
