@@ -34,9 +34,11 @@ export default function Navbar({ history }) {
             {user && <>
               <Button color="inherit"><NavLink to={routes.PRODUCTS} className={classes.menuButton}>Annonces</NavLink></Button>
               <Button color="inherit" onClick={handleLogout}>Déconnexion</Button>
-            </>||
+            </>|| <>
               <Button color="inherit"><NavLink to={routes.LOGIN} className={classes.menuButton}>Connexion</NavLink></Button>
-            }
+              <Button color="inherit"><NavLink to={routes.REGISTER} className={classes.menuButton}>S'inscrire</NavLink></Button>
+
+            </>}
           </div>
       </Toolbar>
     </AppBar>
