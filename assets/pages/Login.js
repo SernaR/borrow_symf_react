@@ -9,10 +9,11 @@ import Form from '../components/forms/Form';
 import Field from '../components/forms/Field';
 import Button from '../components/forms/Button'
 
-import { Container, makeStyles, Typography } from '@material-ui/core';
+import { Container, makeStyles } from '@material-ui/core';
+import ErrorMessage from '../components/forms/ErrorMessage';
 
 const useStyles = makeStyles((theme) => ({
-    container: {
+    from_container: {
       marginTop: theme.spacing(4),
       display: 'flex',
       flexDirection: 'column',
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const validationSchema = Yup.object().shape({
-    username: Yup.string().required("le nom est obligatoire").email("l'adresse email doit avoir un format valide"),
+    username: Yup.string().required("l'adresse email est obligatoire").email("l'adresse email doit avoir un format valide"),
     password: Yup.string().required("le mot de passe est obligatoire")
 })
 
@@ -46,21 +47,22 @@ const Login = ({history}) => {
 
     return ( 
         <Container component="main" maxWidth="xs">
-            <div className={classes.container}>
-                {errorMessage && <Typography gutterBottom color='error'>{errorMessage}</Typography>}
+            <div className={classes.from_container}>
+                <ErrorMessage errorMessage={errorMessage} />
                 <Form
                     initialValues={{ username: 'user3@domain.fr', password: 'Mot2passe!!' }}
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                     >  
                         <Field 
-                            name="username" 
                             label='Adresse Email'
+                            name="username" 
+                            autoFocus
                             />
                         <Field
+                            label='Mot de passe'
                             name="password"
                             type="password"
-                            label='Mot de passe'
                             />
                         <Button title="Se connecter" />
                 </Form>

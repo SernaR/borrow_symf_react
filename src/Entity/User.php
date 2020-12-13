@@ -48,7 +48,7 @@ class User implements UserInterface
      * @Assert\NotBlank(message="le mot de passe est obligatoire")
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/",
-     *     match=false,
+     *     match=true,
      *     message="Votre mot de passe doit avoir au moins 1 majuscule, 1 chiffre, 1 caractère spécial et une longueur d'au moins 8 caractères")
      */
     private $password;

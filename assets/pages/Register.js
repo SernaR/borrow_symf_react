@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as Yup from 'yup'
 
-import { LOGIN } from '../config/settings';
 import authApi from '../api/auth'
 import useAuth from '../hooks/useAuth';
-
-import { Button, Container, makeStyles, TextField } from '@material-ui/core';
+import Form from '../components/forms/Form';
+import Field from '../components/forms/Field';
+import Button from '../components/forms/Button';
+import ErrorMessage from '../components/forms/ErrorMessage'
 import routes from '../navigation/routes';
 
+import { Container, makeStyles } from '@material-ui/core';
+
 const useStyles = makeStyles((theme) => ({
-    paper: {
+    from_container: {
       marginTop: theme.spacing(4),
       display: 'flex',
       flexDirection: 'column',
@@ -19,64 +23,27 @@ const useStyles = makeStyles((theme) => ({
       width: '100%', 
       marginTop: theme.spacing(1),
     },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
 }));
+
+const validationSchema = Yup.object().shape({
+    name: Yup.string().required("le pseudo est obligatoire").min(3, "Il faut 3 caractères au minimum").max(30, "Il faut 30 caractères au maximum"),
+    email: Yup.string().required("l'adresse email est obligatoire").email("l'adresse email doit avoir un format valide"),
+    password: Yup.string().required("le mot de passe est obligatoire").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Votre mot de passe doit avoir au moins 1 majuscule, 1 chiffre, 1 caractère spécial et une longueur d'au moins 8 caractères"),
+    passwordConfirm: Yup.string().required("le mot de passe est obligatoire") .oneOf([Yup.ref('password'), null], "Votre confirmation de mot de passe n'est pas conforme avec le mot de passe original")
+})
 
 const Register = ({history}) => {
     const classes = useStyles();
     const auth = useAuth()
 
-    const [user, setUser] = useState({
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirm: ''
-    });
+    const [errorMessage, setErrorMessage] = useState()
 
-    const [errors, setErrors] = useState({
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirm: ''
-    });
-
-     const handleChange = ({ currentTarget }) => {
-        const { name, value } = currentTarget;
-        setUser({ ...user, [name]: value });
-    };
-
-    const handleSubmit = async event => {
-        event.preventDefault();
-
-        const apiErrors = {...errors};
-        if(user.password !== user.passwordConfirm) {
-            apiErrors.passwordConfirm = "Votre confirmation de mot de passe n'est pas conforme avec le mot de passe original";
-            return setErrors(apiErrors)
-        }
-
-        let empty = false
-        for (const [key, value] of Object.entries(user)) {
-            if(value === '') {
-                apiErrors[key] = 'Le champs est obligatoire'
-                empty = true
-            }
-        }
-        if(empty) return setErrors(apiErrors)
+    const handleSubmit = async user => {
+        //event.preventDefault(); //////////////////////********************// */
 
         const result = await authApi.register(user)
-        if (!result.ok) {
-            const { violations } = result.data;
-            if(violations) {
-                violations.map( ({ propertyPath, title }) => {
-                    apiErrors[propertyPath] = title;
-                });
-                return setErrors(apiErrors);
-            }  
-        }
+        if (!result.ok) return setErrorMessage("Des errreurs dans le formulaire")
 
-        //auto login
         const loginResult = await authApi.login({username: user.email, password: user.password})
         if(loginResult.ok) {
             auth.login(loginResult.data.token)
@@ -86,67 +53,36 @@ const Register = ({history}) => {
 
     return ( 
         <Container component="main" maxWidth="xs">
-            <div className={classes.paper}>
-                <form className={classes.form} onSubmit={handleSubmit} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={user.name} 
-                        onChange={handleChange}
-                        error={errors.name !== ''}
-                        helperText={errors.name}
-                        fullWidth
-                        label="Votre pseudo"
-                        name="name"
-                        autoFocus
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={user.email} 
-                        onChange={handleChange}
-                        error={errors.email !== ''}
-                        helperText={errors.email}
-                        fullWidth
-                        label="Votre adresse email"
-                        name="email"
-                        type="email"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={user.password} 
-                        onChange={handleChange}
-                        error={errors.password !== ''}
-                        helperText={errors.password}
-                        fullWidth
-                        label="Votre mot de passe"
-                        name="password"
-                        type="password"
-                    />
-                     <TextField
-                        variant="outlined"
-                        margin="normal"
-                        value={user.passwordConfirm} 
-                        onChange={handleChange}
-                        error={errors.passwordConfirm !== ''}
-                        helperText={errors.passwordConfirm}
-                        fullWidth
-                        label="Confirmation du mot de passe"
-                        name="passwordConfirm"
-                        type="password"
-                    />  
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
+            <div className={classes.from_container}>
+                <ErrorMessage errorMessage={errorMessage} />
+                <Form
+                    initialValues={{ 
+                        name: '', 
+                        email: '', 
+                        password: '',
+                        passwordConfirm: ''
+                    }}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
                     >
-                        S'inscrire
-                    </Button>
-                    <Link to={routes.LOGIN} className="btn btn-link">J'ai déjà un compte</Link>
-                </form>
+                        <Field 
+                            label='Pseudo'
+                            name="name" 
+                            autoFocus/>
+                        <Field 
+                            label='Adresse Email'
+                            name="email"/>
+                        <Field 
+                            label='Mot de passe'
+                            name="password"
+                            type="password"/>
+                        <Field 
+                            label='Confirmation du mot de passe'
+                            name="passwordConfirm"
+                            type="password"/>
+                        <Button title={"S'inscrire"}/>  
+                        <Link to={routes.LOGIN}>J'ai déjà un compte</Link>
+                </Form>     
             </div> 
         </Container>    
     );

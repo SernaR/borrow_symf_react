@@ -7,6 +7,9 @@ const AppForm = ({ initialValues, onSubmit, validationSchema, children }) => {
             initialValues={initialValues}
             onSubmit={ onSubmit }
             validationSchema={validationSchema}
+
+            validateOnChange={false}
+            validateOnBlur={false}
         >
             { () => (
                 <Form >  

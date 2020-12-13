@@ -26,13 +26,13 @@ class UserController extends AbstractController
         $json = $request->getContent();
         $user = $serializer->deserialize($json, User::class, 'json');
         
-        $password = $encoder->encodePassword($user, $user->getPassword());
-        $user->setPassword($password);
-
         $errors = $validator->validate($user);
         if(count($errors) > 0) {
             return $this->json($errors, 400); 
         }
+
+        $password = $encoder->encodePassword($user, $user->getPassword());
+        $user->setPassword($password);
 
         $em->persist($user);
         $em->flush();
