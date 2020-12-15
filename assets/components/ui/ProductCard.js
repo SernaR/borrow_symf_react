@@ -1,4 +1,7 @@
 import React from 'react';
+
+import routes from '../../navigation/routes'
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -12,10 +15,12 @@ import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Link } from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
+    //maxWidth: 345,
   },
   media: {
     height: 0,
@@ -26,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProductCard() {
+export default function ProductCard({product}) {
   const classes = useStyles();
 
   return (
@@ -34,7 +39,7 @@ export default function ProductCard() {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+            {product.owner.name.substr(0, 2).toUpperCase()}
           </Avatar>
         }
         action={
@@ -42,18 +47,21 @@ export default function ProductCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title= {product.owner.name}
       />
-      <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
-      />
+      <Link to={routes.PRODUCT + product.id}>
+        <CardMedia
+          className={classes.media}
+          image={product.imageName ? ("/images/products/" + product.imageName) : "/images/404.jpg"}
+          title="Paella dish"
+        />
+      </Link>
       <CardContent>
+        <Typography variant="body2" color="textPrimary" component="p">
+          {product.name}
+        </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+          {product.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

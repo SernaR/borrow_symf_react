@@ -3,12 +3,12 @@ import React from 'react';
 import {images} from '../../config/settings'
 import { makeStyles } from '@material-ui/core';
 
-const Background = images.hero
+const Background = images.error404
 const useStyles = makeStyles(theme =>({
-    hero: {
+    container: {
         flexGrow: 1,
         paddingTop: theme.spacing(5),
-        height: '60vh',
+        height: '100vh',
         backgroundImage: `url(${Background})`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "bottom center",
@@ -16,11 +16,11 @@ const useStyles = makeStyles(theme =>({
     }
 }))
 
-const Hero = () => {
-    const classes = useStyles();
+const Error404 = () => {
+    const classes= useStyles()
     return ( 
-        <div className={classes.hero}></div>
+        <div className={classes.container}></div>
     );
 }
 
-export default Hero;
+export default Error404;

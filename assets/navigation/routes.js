@@ -2,5 +2,6 @@ export default Object.freeze({
     HOME: '/',
     LOGIN: "/login",
     REGISTER: "/register",
-    PRODUCTS: '/annonces'
+    PRODUCTS: '/annonces',
+    PRODUCT: '/annonce/'
 })
