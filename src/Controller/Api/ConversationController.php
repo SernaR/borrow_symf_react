@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Entity\Product;
 use App\Entity\Conversation;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ConversationRepository;
@@ -26,6 +27,16 @@ class ConversationController extends AbstractController
         $current_user = $this->getUser();
         $conversations = $repo->findByOwner($current_user->getId());
         return $this->json( $conversations, 200, [], ['groups' => "conversations"]);
+    }
+
+    /**
+     * @Route("/conversations/product/{product}", name="_findByBorrower", methods="GET")
+     */
+    public function findByBorrower(Product $product, ConversationRepository $repo)
+    {
+        $current_user = $this->getUser();
+        $conversation = $repo->findByBorrower($current_user->getId(), $product->getId());
+        return $this->json( $conversation, 200, [], ['groups' => "conversations"]);
     }
 
     /**

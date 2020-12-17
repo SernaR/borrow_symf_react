@@ -33,6 +33,22 @@ class ConversationRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByBorrower($borrower, $product)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.messages', 'm')
+            ->join('m.user', 'u')
+            ->andWhere('c.product = :product')
+            ->andWhere('c.isDone = :isDone')
+            ->andWhere('u.id = :borrower')
+            ->setParameter('product', $product)
+            ->setParameter('isDone', false)
+            ->setParameter('borrower', $borrower)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     // /**
     //  * @return Conversation[] Returns an array of Conversation objects
     //  */

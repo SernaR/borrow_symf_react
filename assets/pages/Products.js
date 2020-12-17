@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import useApi from '../hooks/useApi';
-import productApi from '../api/products'
+import productApi from '../api/product'
 import ProductCard from '../components/ui/ProductCard';
 
 import { Container, Grid, makeStyles } from '@material-ui/core';

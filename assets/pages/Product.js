@@ -1,40 +1,53 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
+import authContext from '../auth/context'
 import useApi from '../hooks/useApi';
-import productApi from '../api/products'
+import productApi from '../api/product'
+import conversationApi from '../api/conversation'
 import Error404 from '../components/error/Error404';
 import ProductCard from '../components/ui/ProductCard';
 
-import { Box, Container, Grid, GridList, GridListTile, makeStyles, TextField } from '@material-ui/core';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import { Box, Button, Container, Grid, makeStyles, Paper, TextField } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
+
+//faire method check conversation dans un bouton
+//si l'utilisateur a une conversation -> l'afficher
+// sinon nouvelle conversation
+
+//redefinir isReady
 
 const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: theme.spacing(3),
-        //border: '1px solid black'
     },
-    messages_container: {
+    contact: {
+        height: '100%',
         display: 'flex',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
   }));
 
 const Product = ({match}) => {
     const classes = useStyles();
+    //const { user } = useContext(authContext)
 
     const { id } = match.params;
     const { data: product, error, loading, request: loadProduct } = useApi(() => productApi.find(id))
-    console.log('loading:', loading)
-    console.log('product:', product)
+    const { data: conversation, request: loadConversation } = useApi(() => conversationApi.findByBorrower(id))
+   
+    //a redefinir
     const isReady = Object.keys(product).length !== 0 && !loading
     
     useEffect(() => {
         loadProduct()
+        loadConversation()
     },[]) 
-    
-    
+
+    const handleClick= () => {
+        //console.log(conversation)
+        console.log(conversation)    }
+
     if(error) return <Error404 />
 
     return ( 
@@ -44,9 +57,17 @@ const Product = ({match}) => {
                     <Grid item xs={12} md={6}>
                         {isReady && <ProductCard product={product}/>}
                     </Grid>
-                    <Grid item xs={12} md={6} className={classes.messages_container}>
-                        <Box >plop</Box>
-                        <TextField fullWidth variant="outlined" label="envoyer un message" />
+                    <Grid item xs={12} md={6} >
+                        <Paper className={classes.contact}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                endIcon={<SendIcon />}
+                                onClick={handleClick}
+                            >
+                                Send
+                            </Button>
+                        </Paper>
                     </Grid>
             </Grid>
         </Container>         
