@@ -5,9 +5,16 @@ import routes from './routes'
 import useAuth from '../hooks/useAuth';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, IconButton, Avatar } from '@material-ui/core';
 
-const useStyles = makeStyles({
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+
+const useStyles = makeStyles(theme =>({
   menuButton: {
     textDecoration: 'none',
     color: 'inherit',
@@ -15,7 +22,10 @@ const useStyles = makeStyles({
   toolbar: {
     justifyContent: 'space-around'
   },
-})
+  library: {
+    marginRight: theme.spacing(3)
+  }
+}))
 
 export default function Navbar({ history }) {
   const classes = useStyles();
@@ -32,8 +42,24 @@ export default function Navbar({ history }) {
           <NavLink to={routes.HOME} className={classes.menuButton}><Typography variant="h5" color="inherit" >Kip Creativ'</Typography></NavLink>  
           <div>
             {user && <>
-              <Button color="inherit"><NavLink to={routes.PRODUCTS} className={classes.menuButton}>Annonces</NavLink></Button>
-              <Button color="inherit" onClick={handleLogout}>Déconnexion</Button>
+              <Button color="inherit" variant="outlined" className={classes.library} startIcon={<ImportContactsIcon />}>
+                <NavLink to={routes.PRODUCTS} className={classes.menuButton}>Bibliotheque</NavLink>
+              </Button>
+              <IconButton color="inherit" aria-label="mail" component="span">
+                <MailOutlineIcon />
+              </IconButton> 
+              <IconButton color="inherit" aria-label="notification" component="span">
+              <NotificationsNoneIcon />
+                </IconButton> 
+              <IconButton color="inherit" aria-label="favorite" component="span">
+                <FavoriteBorderIcon />
+              </IconButton>
+              <IconButton color="inherit" aria-label="account" component="span">
+                <Avatar alt="avatar" src="/images/avatar.jpg" />
+              </IconButton>
+              <IconButton color="inherit" aria-label="logout" onClick={handleLogout}>
+                <ExitToAppOutlinedIcon />
+              </IconButton>
             </>|| <>
               <Button color="inherit"><NavLink to={routes.LOGIN} className={classes.menuButton}>Connexion</NavLink></Button>
               <Button color="inherit"><NavLink to={routes.REGISTER} className={classes.menuButton}>S'inscrire</NavLink></Button>

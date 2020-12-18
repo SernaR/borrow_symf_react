@@ -76,6 +76,11 @@ class Product
      */
     private $imageName;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $isbn;
+
     
     public function __construct()
     {
@@ -192,6 +197,18 @@ class Product
     public function setImageName(?string $imageName): self
     {
         $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
+    }
+
+    public function setIsbn(?string $isbn): self
+    {
+        $this->isbn = $isbn;
 
         return $this;
     }
