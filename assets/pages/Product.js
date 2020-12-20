@@ -5,12 +5,13 @@ import googleApi from '../api/google'
 import Error404 from '../components/error/Error404';
 
 
-import { Box, Container, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Box, Container, Grid, makeStyles, Paper } from '@material-ui/core';
 import Fab from '@material-ui/core/Fab';
 
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import Text from '../components/ui/Text';
 
 
 
@@ -23,6 +24,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: theme.spacing(3),
+        padding: theme.spacing(2),
     },
     cockpit: {
         width:' 100%',
@@ -36,13 +38,6 @@ const useStyles = makeStyles((theme) => ({
     },
     image: {
         height: 500,
-        padding: theme.spacing(1),
-    },
-    description_label: {
-        paddingTop: theme.spacing(2),
-    },
-    description: {
-        paddingRight: theme.spacing(2)
     },
     buttons:{
         marginTop: theme.spacing(1),
@@ -70,15 +65,16 @@ const Product = ({match}) => {
         loadBook()
     },[]) 
 
-    console.log(book)
+    console.log(data)
     if(error) return <Error404 />
 
     return ( 
        <>
-            {isReady && <><Box className={classes.cockpit}>
-                <Typography variant="h3" color="inherit" className={classes.title}>{book.title}</Typography>
-                <Typography variant="h4">Author: {book.authors}</Typography>
-            </Box>
+            {isReady && <>
+                <Box className={classes.cockpit}>
+                    <Text size='title1' className={classes.title}>{book.title}</Text>
+                    <Text size='title2' >Par {book.authors}</Text>
+                </Box>
                 <Container>
                     <Paper className={classes.container}>
                         <Grid container spacing={2}>
@@ -86,8 +82,8 @@ const Product = ({match}) => {
                                 <img src="images/products/skltr-5fcbbe3a6f3d4420033800.png" className={classes.image}/>
                             </Grid> 
                             <Grid xs={12} md={8} item container direction="column" >
-                                <Typography variant="h5" className={classes.description_label}>Description : </Typography>
-                                <Typography variant="h6" className={classes.description}>{book.description}</Typography>
+                                <Text size='title2'>Description : </Text>
+                                <Text size="body1">{book.description}</Text>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -102,7 +98,8 @@ const Product = ({match}) => {
                             <FavoriteBorderIcon />
                         </Fab>
                     </Grid>
-            </Container>    </>}     
+                </Container>    
+            </>}     
         </>
     )
 }
