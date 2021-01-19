@@ -3,5 +3,6 @@ export default Object.freeze({
     LOGIN: "/login",
     REGISTER: "/register",
     PRODUCTS: '/annonces',
-    PRODUCT: '/annonce/'
+    PRODUCT: '/annonce/',
+    PROFILE: '/profil'
 })

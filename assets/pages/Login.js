@@ -50,7 +50,7 @@ const Login = ({history}) => {
             <div className={classes.from_container}>
                 <ErrorMessage errorMessage={errorMessage} />
                 <Form
-                    initialValues={{ username: 'user3@domain.fr', password: 'Mot2passe!!' }}
+                    initialValues={{ username: '', password: '' }}
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                     >  

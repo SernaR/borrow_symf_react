@@ -43,7 +43,7 @@ export default function Navbar({ history }) {
           <div>
             {user && <>
               <Button color="inherit" variant="outlined" className={classes.library} startIcon={<ImportContactsIcon />}>
-                <NavLink to={routes.PRODUCTS} className={classes.menuButton}>Bibliotheque</NavLink>
+                <NavLink to={routes.PRODUCTS} className={classes.menuButton}>Annonces</NavLink>
               </Button>
               <IconButton color="inherit" aria-label="mail" component="span">
                 <MailOutlineIcon />
@@ -55,7 +55,8 @@ export default function Navbar({ history }) {
                 <FavoriteBorderIcon />
               </IconButton>
               <IconButton color="inherit" aria-label="account" component="span">
-                <Avatar alt="avatar" src="/images/avatar.jpg" />
+                <NavLink to={routes.PROFILE}>
+                  <Avatar alt="avatar" src="/images/avatar.jpg" /></NavLink>
               </IconButton>
               <IconButton color="inherit" aria-label="logout" onClick={handleLogout}>
                 <ExitToAppOutlinedIcon />

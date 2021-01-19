@@ -69,7 +69,7 @@ const AddProduct = () => {
                             name="description"
                             />
                          <File onChange={handleChange}/>
-                        <Button title="Enregistrer" />
+                        <Button title="Ajouter un Produit" />
                 </Form>
             </div> 
         </Container>

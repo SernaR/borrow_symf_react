@@ -9,6 +9,7 @@ import Products from '../pages/Products'
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Product from '../pages/Product';
+import Profile from '../pages/Profile';
 
 const Router = () => {
     const NavbarWithRouter = withRouter(Navbar);
@@ -21,6 +22,7 @@ const Router = () => {
                 <Route path={routes.LOGIN} component={Login}/>
                 <Route path={routes.REGISTER} component={Register}/>
                 <Route path={routes.PRODUCTS} component={Products}/>
+                <Route path={routes.PROFILE} component={Profile}/>
                 <Route path={routes.PRODUCT + ':id'} component={Product}/>
             </Switch>  
         </HashRouter>
